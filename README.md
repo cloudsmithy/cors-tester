@@ -1,72 +1,125 @@
-[![Netlify Status](https://api.netlify.com/api/v1/badges/fd9a4041-0c73-408c-9249-551e6110d73a/deploy-status)](https://app.netlify.com/sites/cors-tool/deploys)
-# CORS Tester
-CORS Tester 是一个简单的 React 应用，旨在帮助开发者测试跨域请求。你可以输入 URL、选择请求方法，并添加自定义的请求头和请求体。应用将展示 API 响应或错误信息。
+# CORS 跨域测试工具
 
-## 功能
+一个用于测试和调试API跨域请求的React应用，可以帮助开发者快速诊断和解决CORS（跨域资源共享）相关问题。
 
-- 输入目标 API 的 URL。
-- 选择 HTTP 请求方法（GET、POST、PUT、DELETE、PATCH）。
-- 输入自定义的请求头和请求体（JSON 格式）。
-- 发送请求并在浏览器控制台中查看响应或错误信息。
+## 功能特点
 
-## 安装与运行
+- 支持所有常见HTTP方法（GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD）
+- 自定义请求头和请求体
+- 详细的响应查看器，包括响应体、响应头和请求信息
+- 请求历史记录和收藏功能
+- 错误分析和诊断功能
+- 控制台错误捕获（调试模式）
+- 深色/浅色主题切换
 
-### 克隆项目
+## 错误诊断功能
 
-```bash
-git@github.com:cloudsmithy/cors-tester.git
-cd cors-tester
+本工具提供了强大的错误诊断功能，可以帮助开发者快速定位和解决常见的API请求问题：
+
+- **网络错误分析**：分析网络连接问题，提供可能的解决方案
+- **CORS错误诊断**：详细解释跨域资源共享错误，并提供修复建议
+- **HTTP状态码解析**：针对不同的HTTP错误状态码提供专业解释和解决方案
+- **控制台错误捕获**：在调试模式下捕获浏览器控制台中的错误信息，特别是CORS相关错误
+
+## 使用方法
+
+1. 输入目标API的URL
+2. 选择HTTP请求方法
+3. 添加必要的请求头和请求体
+4. 点击"发送请求"按钮
+5. 查看响应结果和错误分析
+
+### 调试模式
+
+启用调试模式可以捕获浏览器控制台中的错误信息，这对于诊断CORS问题特别有用：
+
+1. 打开右上角的"调试模式"开关
+2. 发送请求
+3. 查看捕获的控制台错误
+4. 使用错误分析工具获取解决方案
+
+## 常见CORS错误及解决方案
+
+### 1. 缺少 Access-Control-Allow-Origin 头
+
+**错误信息**：
+```
+Access to XMLHttpRequest at 'https://api.example.com' from origin 'http://localhost:3000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
 ```
 
+**解决方案**：
+在服务器端添加适当的CORS头：
+```
+Access-Control-Allow-Origin: http://localhost:3000
+```
+或者允许所有来源（不推荐用于生产环境）：
+```
+Access-Control-Allow-Origin: *
+```
 
+### 2. 预检请求失败
+
+**错误信息**：
+```
+Access to XMLHttpRequest at 'https://api.example.com' from origin 'http://localhost:3000' has been blocked by CORS policy: Response to preflight request doesn't pass access control check.
+```
+
+**解决方案**：
+确保服务器正确响应OPTIONS预检请求，添加以下头信息：
+```
+Access-Control-Allow-Origin: http://localhost:3000
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+Access-Control-Allow-Headers: Content-Type, Authorization
+Access-Control-Max-Age: 86400
+```
+
+### 3. 凭证问题
+
+**错误信息**：
+```
+Access to XMLHttpRequest at 'https://api.example.com' from origin 'http://localhost:3000' has been blocked by CORS policy: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'.
+```
+
+**解决方案**：
+在服务器端添加：
+```
+Access-Control-Allow-Credentials: true
+```
+并确保Access-Control-Allow-Origin不使用通配符*，而是指定具体的域名。
+
+## 开发
 
 ### 安装依赖
 
-确保你已经安装了 Node.js 和 npm。然后在项目目录下运行以下命令安装所需的依赖：
-
 ```bash
 npm install
+# 或
+yarn install
 ```
 
 ### 启动开发服务器
 
-运行以下命令启动开发服务器：
-
 ```bash
 npm start
+# 或
+yarn start
 ```
 
-打开浏览器并访问 `http://localhost:3000` 来查看应用。
+### 构建生产版本
 
-## 使用方法
+```bash
+npm run build
+# 或
+yarn build
+```
 
-1. **输入 URL**: 在 URL 输入框中输入你想要测试的 API 地址。
-2. **选择请求方法**: 从下拉菜单中选择请求方法（GET、POST、PUT、DELETE、PATCH）。
-3. **输入 Headers**: 在 Headers 输入框中输入请求头信息，格式为 JSON。例如：
-    ```json
-    {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer YOUR_TOKEN"
-    }
-    ```
-4. **输入 Request Body**: 在 Request Body 输入框中输入请求体信息，格式为 JSON。例如：
-    ```json
-    {
-      "key": "value"
-    }
-    ```
-5. **发送请求**: 点击 “Send Request” 按钮发送请求。响应或错误信息将显示在浏览器的控制台中。
+## 技术栈
 
-## 依赖
+- React
+- Material-UI
+- Axios
+- JavaScript ES6+
 
-- [React](https://reactjs.org/)
-- [Material-UI](https://mui.com/)
-- [Axios](https://axios-http.com/)
+## 许可
 
-## 贡献
-
-欢迎贡献！如果你有任何改进建议或发现问题，请提交 Issues 或 Pull Requests。
-
-## 许可证
-
-此项目使用 [MIT 许可证](LICENSE)。
+MIT

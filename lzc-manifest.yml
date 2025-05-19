@@ -1,0 +1,12 @@
+lzc-sdk-version: 0.1
+name: cors-tester
+package: xu.lazycat.app.cors-tester
+version: 0.0.1
+description:
+license: https://choosealicense.com/licenses/mit/
+homepage:
+author:
+application:
+  subdomain: cors-tester
+  routes:
+    - /=file:///lzcapp/pkg/content/web
