@@ -64,9 +64,6 @@ const HeaderEditor = ({ headers, onChange }) => {
       case 'auth':
         newHeader = { key: 'Authorization', value: 'Bearer ' };
         break;
-      case 'cors':
-        newHeader = { key: 'Access-Control-Allow-Origin', value: '*' };
-        break;
       default:
         return;
     }
@@ -108,17 +105,8 @@ const HeaderEditor = ({ headers, onChange }) => {
             <Button 
               size="small" 
               onClick={() => addCommonHeaders('auth')}
-              sx={{ mr: 1 }}
             >
               +授权
-            </Button>
-          </Tooltip>
-          <Tooltip title="添加CORS头">
-            <Button 
-              size="small" 
-              onClick={() => addCommonHeaders('cors')}
-            >
-              +CORS
             </Button>
           </Tooltip>
         </Box>

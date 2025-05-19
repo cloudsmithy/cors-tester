@@ -1,23 +1,32 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
+# 依赖
 /node_modules
 /.pnp
 .pnp.js
 
-# testing
+# 测试
 /coverage
 
-# production
+# 构建输出
 /build
 
-# misc
-.DS_Store
+# 环境变量
+.env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
+# 日志
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# 编辑器
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# 其他
+.eslintcache

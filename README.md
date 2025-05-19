@@ -12,14 +12,38 @@
 - 控制台错误捕获（调试模式）
 - 深色/浅色主题切换
 
-## 错误诊断功能
+## 本地开发
 
-本工具提供了强大的错误诊断功能，可以帮助开发者快速定位和解决常见的API请求问题：
+### 安装依赖
 
-- **网络错误分析**：分析网络连接问题，提供可能的解决方案
-- **CORS错误诊断**：详细解释跨域资源共享错误，并提供修复建议
-- **HTTP状态码解析**：针对不同的HTTP错误状态码提供专业解释和解决方案
-- **控制台错误捕获**：在调试模式下捕获浏览器控制台中的错误信息，特别是CORS相关错误
+```bash
+npm install
+# 或
+yarn install
+```
+
+### 启动开发服务器
+
+```bash
+npm start
+# 或
+yarn start
+```
+
+## 使用Docker运行
+
+### 构建并启动容器
+
+```bash
+# 使用docker-compose
+docker-compose up -d
+
+# 或手动构建和运行
+docker build -t cors-tester .
+docker run -p 8080:80 -d cors-tester
+```
+
+然后访问 http://localhost:8080
 
 ## 使用方法
 
@@ -40,7 +64,7 @@
 
 ## 常见CORS错误及解决方案
 
-### 1. 缺少 Access-Control-Allow-Origin 头
+### 缺少 Access-Control-Allow-Origin 头
 
 **错误信息**：
 ```
@@ -57,7 +81,7 @@ Access-Control-Allow-Origin: http://localhost:3000
 Access-Control-Allow-Origin: *
 ```
 
-### 2. 预检请求失败
+### 预检请求失败
 
 **错误信息**：
 ```
@@ -72,53 +96,6 @@ Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
 Access-Control-Allow-Headers: Content-Type, Authorization
 Access-Control-Max-Age: 86400
 ```
-
-### 3. 凭证问题
-
-**错误信息**：
-```
-Access to XMLHttpRequest at 'https://api.example.com' from origin 'http://localhost:3000' has been blocked by CORS policy: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'.
-```
-
-**解决方案**：
-在服务器端添加：
-```
-Access-Control-Allow-Credentials: true
-```
-并确保Access-Control-Allow-Origin不使用通配符*，而是指定具体的域名。
-
-## 开发
-
-### 安装依赖
-
-```bash
-npm install
-# 或
-yarn install
-```
-
-### 启动开发服务器
-
-```bash
-npm start
-# 或
-yarn start
-```
-
-### 构建生产版本
-
-```bash
-npm run build
-# 或
-yarn build
-```
-
-## 技术栈
-
-- React
-- Material-UI
-- Axios
-- JavaScript ES6+
 
 ## 许可
 

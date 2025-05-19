@@ -15,6 +15,8 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import ReplayIcon from '@mui/icons-material/Replay';
 import HistoryIcon from '@mui/icons-material/History';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 // 请求方法对应的颜色
 const methodColors = {
@@ -23,6 +25,18 @@ const methodColors = {
   PUT: 'warning',
   DELETE: 'error',
   PATCH: 'secondary'
+};
+
+// 状态码对应的颜色
+const getStatusColor = (status, isError) => {
+  if (isError) return 'error';
+  if (typeof status === 'number') {
+    if (status >= 200 && status < 300) return 'success';
+    if (status >= 300 && status < 400) return 'info';
+    if (status >= 400 && status < 500) return 'warning';
+    if (status >= 500) return 'error';
+  }
+  return 'default';
 };
 
 const RequestHistory = ({ history, onSelect, onClear, onDelete }) => {
@@ -115,22 +129,51 @@ const RequestHistory = ({ history, onSelect, onClear, onDelete }) => {
               </ListItemIcon>
               <ListItemText 
                 primary={
-                  <Typography 
-                    variant="body2" 
-                    noWrap 
-                    sx={{ 
-                      maxWidth: '250px', 
-                      textOverflow: 'ellipsis',
-                      overflow: 'hidden'
-                    }}
-                  >
-                    {item.url}
-                  </Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Typography 
+                      variant="body2" 
+                      noWrap 
+                      sx={{ 
+                        maxWidth: '200px', 
+                        textOverflow: 'ellipsis',
+                        overflow: 'hidden'
+                      }}
+                    >
+                      {item.url}
+                    </Typography>
+                    {item.isError ? (
+                      <Tooltip title="请求失败">
+                        <ErrorOutlineIcon 
+                          color="error" 
+                          fontSize="small" 
+                          sx={{ ml: 1, fontSize: '16px' }} 
+                        />
+                      </Tooltip>
+                    ) : (
+                      <Tooltip title="请求成功">
+                        <CheckCircleOutlineIcon 
+                          color="success" 
+                          fontSize="small" 
+                          sx={{ ml: 1, fontSize: '16px' }} 
+                        />
+                      </Tooltip>
+                    )}
+                  </Box>
                 }
                 secondary={
-                  <Typography variant="caption" color="text.secondary">
-                    {new Date(item.timestamp).toLocaleString()}
-                  </Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      {new Date(item.timestamp).toLocaleString()}
+                    </Typography>
+                    {item.status && (
+                      <Chip 
+                        label={item.status} 
+                        size="small" 
+                        color={getStatusColor(item.status, item.isError)}
+                        sx={{ ml: 1, height: 18, fontSize: '0.65rem' }} 
+                      />
+                    )}
+                  </Box>
                 }
               />
             </ListItem>

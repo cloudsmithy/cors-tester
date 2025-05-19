@@ -116,7 +116,7 @@ class ConsoleErrorCatcher {
           if (xhr.status === 0 && xhr.readyState === 4) {
             const corsErrorObj = {
               type: 'CORS_ERROR',
-              message: `Possible CORS error when accessing: ${url}`,
+              message: `CORS error when accessing: ${url}`,
               timestamp: new Date().getTime()
             };
             if (!self.errors.some(e => e.message === corsErrorObj.message)) {

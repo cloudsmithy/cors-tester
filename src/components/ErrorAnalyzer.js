@@ -110,12 +110,11 @@ const ErrorAnalyzer = ({ error, consoleErrors }) => {
           description: '浏览器阻止了跨域请求，这是一种安全机制，防止网站访问不同源的资源',
           checkItems: [
             '检查服务器是否设置了正确的CORS响应头',
-            '检查请求是否包含需要预检的特殊头部或方法',
             '确认服务器是否正确响应OPTIONS预检请求',
-            '检查Access-Control-Allow-Origin头是否包含当前域名或*'
+            '检查服务器返回的Access-Control-Allow-Origin头是否包含当前域名或*'
           ],
           possibleSolutions: [
-            '在服务器端添加以下CORS头部:\nAccess-Control-Allow-Origin: * 或 http://localhost:3000\nAccess-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS\nAccess-Control-Allow-Headers: Content-Type, Authorization',
+            '在服务器端添加必要的CORS响应头',
             '使用代理服务器转发请求，例如在开发环境中配置代理',
             '对于开发环境，可以使用浏览器插件临时禁用CORS限制',
             '如果您控制服务器，可以在服务器端实现CORS支持'
@@ -123,7 +122,8 @@ const ErrorAnalyzer = ({ error, consoleErrors }) => {
           codeExamples: [
             {
               language: 'Node.js (Express)',
-              code: `app.use((req, res, next) => {
+              code: `// 在服务器端添加以下代码
+app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -135,7 +135,8 @@ const ErrorAnalyzer = ({ error, consoleErrors }) => {
             },
             {
               language: 'Python (Flask)',
-              code: `from flask import Flask
+              code: `# 在服务器端添加以下代码
+from flask import Flask
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -147,7 +148,8 @@ def hello_world():
             },
             {
               language: 'Java (Spring Boot)',
-              code: `@Configuration
+              code: `// 在服务器端添加以下代码
+@Configuration
 public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -468,7 +470,7 @@ public class CorsConfig implements WebMvcConfigurer {
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant="subtitle2">
                 <CodeIcon fontSize="small" sx={{ mr: 1, verticalAlign: 'middle' }} />
-                代码示例
+                服务器端代码示例
               </Typography>
             </AccordionSummary>
             <AccordionDetails>

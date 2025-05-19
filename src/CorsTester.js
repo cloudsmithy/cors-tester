@@ -127,6 +127,21 @@ const CorsTester = ({ toggleTheme, mode }) => {
     setSnackbar({ open: true, message, severity });
   };
 
+  // 添加请求到历史记录
+  const addToHistory = (status, isError = false) => {
+    const newHistoryItem = {
+      url,
+      method,
+      headers,
+      body,
+      timestamp: new Date().getTime(),
+      status: status || (isError ? 'ERROR' : 'UNKNOWN'),
+      isError: isError
+    };
+    
+    setHistory(prev => [newHistoryItem, ...prev.slice(0, 19)]); // 最多保存20条记录
+  };
+
   const handleRequest = async () => {
     if (!url) {
       showSnackbar('请输入URL', 'warning');
@@ -181,22 +196,17 @@ const CorsTester = ({ toggleTheme, mode }) => {
       if (response.status >= 400) {
         const errorObj = new Error(`HTTP Error: ${response.status} ${response.statusText}`);
         errorObj.response = response;
+        
+        // 添加到历史记录（失败请求）
+        addToHistory(response.status, true);
+        
         throw errorObj;
       }
       
       setResponse(response);
       
-      // 添加到历史记录
-      const newHistoryItem = {
-        url,
-        method,
-        headers,
-        body,
-        timestamp: new Date().getTime(),
-        status: response.status
-      };
-      
-      setHistory(prev => [newHistoryItem, ...prev.slice(0, 19)]); // 最多保存20条记录
+      // 添加到历史记录（成功请求）
+      addToHistory(response.status, false);
       
     } catch (error) {
       console.error('Error details:', error);
@@ -205,6 +215,11 @@ const CorsTester = ({ toggleTheme, mode }) => {
       if (error.response) {
         // 服务器响应了，但状态码不在2xx范围内
         error.message = `HTTP Error: ${error.response.status} ${error.response.statusText || ''}`;
+        
+        // 如果还没有添加到历史记录（可能已经在上面添加了）
+        if (!error.historyAdded) {
+          addToHistory(error.response.status, true);
+        }
       } else if (error.request) {
         // 请求已发送但没有收到响应
         if (error.message === 'Network Error') {
@@ -224,9 +239,15 @@ const CorsTester = ({ toggleTheme, mode }) => {
             error.message = 'Network Error: 无法连接到服务器或请求被中断';
           }
         }
+        
+        // 添加到历史记录（网络错误）
+        addToHistory('NETWORK_ERROR', true);
       } else {
         // 设置请求时发生了错误
         error.message = `Request Error: ${error.message}`;
+        
+        // 添加到历史记录（请求错误）
+        addToHistory('REQUEST_ERROR', true);
       }
       
       setError(error);
@@ -476,7 +497,7 @@ const CorsTester = ({ toggleTheme, mode }) => {
               </Box>
               
               {/* 显示控制台错误 */}
-              {debugMode && (
+              {debugMode && consoleErrors.length > 0 && (
                 <ConsoleErrorViewer 
                   errors={consoleErrors} 
                   onClear={handleClearConsoleErrors}
